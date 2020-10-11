@@ -15,42 +15,30 @@ install -d /usr/local/etc/v2ray
 cat << EOF > /usr/local/etc/v2ray/config.json
 {
   "log": {
-    "access": "/var/log/v2ray/access.log",
-    "error": "/var/log/v2ray/error.log",
     "loglevel": "none"
   },
   "inbounds": [
     {
       "port": $PORT,
-      "tag": "VLESS-in",
-      "protocol": "VLESS",
+      "protocol": "trojan",
       "settings": {
         "clients": [
           {
-            "id": "$UUID",
-            "alterId": 0
+            "password": "$PASSWORD"
+            "level": 1
           }
         ],
-        "decryption": "none"
-      },
-      "streamSettings": {
-        "network": "ws",
-        "wsSettings": {
-          "path": "/app"
-        }
+        "fallbacks": [
+          {
+            "dest": 80
+          }
+        ]
       }
     }
   ],
   "outbounds": [
     {
-      "protocol": "freedom",
-      "settings": {},
-      "tag": "direct"
-    },
-    {
-      "protocol": "blackhole",
-      "settings": {},
-      "tag": "blocked"
+      "protocol": "freedom"
     }
   ],
   "dns": {
@@ -61,18 +49,6 @@ cat << EOF > /usr/local/etc/v2ray/config.json
       "8.8.8.8",
       "8.8.4.4",
       "localhost"
-    ]
-  },
-  "routing": {
-    "domainStrategy": "AsIs",
-    "rules": [
-      {
-        "type": "field",
-        "inboundTag": [
-          "VLESS-in"
-        ],
-        "outboundTag": "direct"
-      }
     ]
   }
 }
